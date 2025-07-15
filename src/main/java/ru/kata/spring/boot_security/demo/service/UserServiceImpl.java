@@ -53,7 +53,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Set<Role> roles = new HashSet<>();
         if (roleIds != null) {
             roles.addAll(roleService.getRolesByIds(roleIds));
+
+            boolean hasAdmin = roles.stream().anyMatch(r -> "ROLE_ADMIN".equals(r.getName()));
+            boolean hasUser = roles.stream().anyMatch(r -> "ROLE_USER".equals(r.getName()));
+
+            if (hasAdmin && !hasUser) {
+                Role userRole = roleService.findByName("ROLE_USER");
+                roles.add(userRole);
+            }
         }
+
         user.setRoles(roles);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
@@ -83,5 +92,4 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         return userRepository.save(userFromDb);
     }
-
 }
