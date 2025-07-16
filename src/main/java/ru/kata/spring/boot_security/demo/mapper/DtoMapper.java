@@ -12,11 +12,17 @@ public class DtoMapper {
                 .map(DtoMapper::toRoleDTO)
                 .collect(Collectors.toSet());
 
-        return new UserDTO(user.getId(), user.getUsername(), roles);
+        return new UserDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getAge(),
+                roles
+        );
     }
 
     public static RoleDTO toRoleDTO(Role role) {
         return new RoleDTO(role.getId(), role.getName());
     }
 }
-

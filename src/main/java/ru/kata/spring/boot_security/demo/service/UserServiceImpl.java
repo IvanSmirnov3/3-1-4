@@ -6,13 +6,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kata.spring.boot_security.demo.mapper.DtoMapper;
 import ru.kata.spring.boot_security.demo.model.Role;
+import ru.kata.spring.boot_security.demo.model.RoleDTO;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.model.UserDTO;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -32,10 +34,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userOptional = userRepository.findByUsername(username);
-        return userOptional.orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username: " + username));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
     @Override
@@ -49,9 +50,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User createUser(User user, List<Long> roleIds) {
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public User createUserFromDTO(UserDTO userDTO) {
+        User user = new User();
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setAge(userDTO.getAge());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+
         Set<Role> roles = new HashSet<>();
-        if (roleIds != null) {
+        if (userDTO.getRoles() != null) {
+            List<Long> roleIds = userDTO.getRoles().stream()
+                    .map(RoleDTO::getId)
+                    .toList();
             roles.addAll(roleService.getRolesByIds(roleIds));
 
             boolean hasAdmin = roles.stream().anyMatch(r -> "ROLE_ADMIN".equals(r.getName()));
@@ -64,32 +81,47 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
 
         user.setRoles(roles);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     @Override
-    public User findById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
-    @Override
-    public User updateUser(Long id, User formUser, List<Long> roleIds, String rawPassword) {
+    public User updateUserFromDTO(Long id, UserDTO userDTO) {
         User userFromDb = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        userFromDb.setUsername(formUser.getUsername());
+        userFromDb.setFirstName(userDTO.getFirstName());
+        userFromDb.setLastName(userDTO.getLastName());
+        userFromDb.setEmail(userDTO.getEmail());
+        userFromDb.setAge(userDTO.getAge());
 
-        if (roleIds != null) {
+        if (userDTO.getRoles() != null) {
+            List<Long> roleIds = userDTO.getRoles().stream()
+                    .map(RoleDTO::getId)
+                    .toList();
             Set<Role> roles = new HashSet<>(roleService.getRolesByIds(roleIds));
+            boolean hasAdmin = roles.stream().anyMatch(r -> "ROLE_ADMIN".equals(r.getName()));
+            boolean hasUser = roles.stream().anyMatch(r -> "ROLE_USER".equals(r.getName()));
+
+            if (hasAdmin && !hasUser) {
+                Role userRole = roleService.findByName("ROLE_USER");
+                roles.add(userRole);
+            }
+
             userFromDb.setRoles(roles);
         }
 
-        if (rawPassword != null && !rawPassword.isEmpty()) {
-            userFromDb.setPassword(passwordEncoder.encode(rawPassword));
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+            userFromDb.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         }
 
         return userRepository.save(userFromDb);
     }
+
+    @Override
+    public List<UserDTO> findAllUserDTO() {
+        return findAllUser().stream()
+                .map(DtoMapper::toUserDTO)
+                .toList();
+    }
+
 }

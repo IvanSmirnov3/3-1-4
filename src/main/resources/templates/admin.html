@@ -48,7 +48,7 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th>ID</th><th>Username</th><th>Roles</th><th>Edit</th><th>Delete</th>
+                                <th>ID</th><th>First Name</th><th>Last Name</th><th>Age</th><th>Email</th><th>Role</th><th>Edit</th><th>Delete</th>
                             </tr>
                             </thead>
                             <tbody id="usersTableBody"></tbody>
@@ -58,11 +58,23 @@
                     <div class="tab-pane fade" id="newUser">
                         <h5 class="text-start ps-2">Add new user</h5>
                         <div class="row justify-content-center">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <form id="createUserForm" class="border rounded p-4 bg-white shadow-sm">
                                     <div class="mb-3 text-center">
-                                        <label class="form-label fw-bold">Username</label>
-                                        <input type="text" name="username" class="form-control" required>
+                                        <label class="form-label fw-bold">First Name</label>
+                                        <input type="text" name="firstName" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3 text-center">
+                                        <label class="form-label fw-bold">Last Name</label>
+                                        <input type="text" name="lastName" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3 text-center">
+                                        <label class="form-label fw-bold">Age</label>
+                                        <input type="number" name="age" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3 text-center">
+                                        <label class="form-label fw-bold">Email</label>
+                                        <input type="email" name="email" class="form-control" required>
                                     </div>
                                     <div class="mb-3 text-center">
                                         <label class="form-label fw-bold">Password</label>
@@ -73,7 +85,7 @@
                                         <select name="roles" class="form-select" multiple required id="newUserRoles"></select>
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <button type="submit" class="btn btn-success btn-sm">Add user</button>
+                                        <button type="submit" class="btn btn-success btn-lg px-4">Add new user</button>
                                     </div>
                                 </form>
                             </div>
@@ -93,18 +105,33 @@
                 <h5 class="modal-title">Edit user</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center">
-                <input type="hidden" name="id">
-                <div class="mb-3 mx-auto" style="width: 60%;">
-                    <label class="form-label fw-bold text-center d-block">Username</label>
-                    <input type="text" name="username" class="form-control">
+            <div class="modal-body">
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">ID</label>
+                    <input class="form-control" name="id" readonly>
                 </div>
-                <div class="mb-3 mx-auto" style="width: 60%;">
-                    <label class="form-label fw-bold text-center d-block">Password</label>
-                    <input type="password" name="password" class="form-control">
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">First Name</label>
+                    <input class="form-control" name="firstName" placeholder="First Name">
                 </div>
-                <div class="mb-3 mx-auto" style="width: 60%;">
-                    <label class="form-label fw-bold text-center d-block">Roles</label>
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">Last Name</label>
+                    <input class="form-control" name="lastName" placeholder="Last Name">
+                </div>
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">Age</label>
+                    <input class="form-control" name="age" placeholder="Age" type="number">
+                </div>
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">Email</label>
+                    <input class="form-control" name="email" placeholder="Email" type="email">
+                </div>
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">Password</label>
+                    <input class="form-control" name="password" placeholder="Password" type="password">
+                </div>
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">Role</label>
                     <select name="roles" class="form-select" multiple id="editUserRoles"></select>
                 </div>
             </div>
@@ -124,24 +151,35 @@
                 <h5 class="modal-title">Delete user</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body text-center">
-                <input type="hidden" name="id">
-                <div class="mb-3 mx-auto" style="width: 60%;">
-                    <label class="form-label fw-bold d-block">Username</label>
-                    <input type="text" name="username" class="form-control" readonly>
+            <div class="modal-body">
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">ID</label>
+                    <input class="form-control" name="id" readonly>
                 </div>
-                <div class="mb-3 mx-auto" style="width: 60%;">
-                    <label class="form-label fw-bold d-block">Password</label>
-                    <input type="password" name="password" class="form-control" readonly>
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">First Name</label>
+                    <input class="form-control" name="firstName" placeholder="First Name" readonly>
                 </div>
-                <div class="mb-3 mx-auto" style="width: 60%;">
-                    <label class="form-label fw-bold d-block">Roles</label>
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">Last Name</label>
+                    <input class="form-control" name="lastName" placeholder="Last Name" readonly>
+                </div>
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">Age</label>
+                    <input class="form-control" name="age" placeholder="Age" readonly>
+                </div>
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">Email</label>
+                    <input class="form-control" name="email" placeholder="Email" readonly>
+                </div>
+                <div class="mb-2 text-center">
+                    <label class="form-label fw-bold">Role</label>
                     <select name="roles" class="form-select" multiple id="deleteUserRoles" disabled></select>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger">Delete</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button class="btn btn-danger">Delete</button>
             </div>
         </form>
     </div>
@@ -159,7 +197,7 @@
 
     function loadAuthInfo() {
         fetch(api + '/user').then(r => r.json()).then(user => {
-            document.getElementById('authUsername').textContent = user.username;
+            document.getElementById('authUsername').textContent = user.email;
             document.getElementById('authRoles').textContent = user.roles.map(r => r.name.replace('ROLE_', '')).join(', ');
         });
     }
@@ -190,7 +228,10 @@
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${u.id}</td>
-                        <td>${u.username}</td>
+                        <td>${u.firstName}</td>
+                        <td>${u.lastName}</td>
+                        <td>${u.age}</td>
+                        <td>${u.email}</td>
                         <td>${u.roles.map(r => r.name.replace('ROLE_', '')).join(', ')}</td>
                         <td><button class="btn btn-info btn-sm" onclick="showEditModal(${u.id})">Edit</button></td>
                         <td><button class="btn btn-danger btn-sm" onclick="showDeleteModal(${u.id})">Delete</button></td>
@@ -204,98 +245,120 @@
         e.preventDefault();
         const formData = new FormData(newUserForm);
         const data = {
-            username: formData.get('username'),
+            firstName: formData.get('firstName'),
+            lastName: formData.get('lastName'),
+            email: formData.get('email'),
+            age: Number(formData.get('age')),
             password: formData.get('password'),
-            roles: [...formData.getAll('roles')].map(Number)
+            roles: Array.from(newUserForm.roles.selectedOptions).map(o => ({id: Number(o.value)}))
         };
         fetch(api + '/users', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
-        }).then(() => {
-            loadUsers();
-            newUserForm.reset();
-            document.getElementById('users-tab').click();
-        });
+        })
+            .then(r => {
+                if (!r.ok) throw new Error('Error adding user');
+                return r.json();
+            })
+            .then(() => {
+                loadUsers();
+                newUserForm.reset();
+                document.getElementById('newUserRoles').selectedIndex = -1;
+                // переключить на вкладку users-table
+                document.getElementById('users-tab').click();
+            })
+            .catch(alert);
     });
 
     function showEditModal(id) {
-        fetch(api + '/users/' + id).then(r => r.json()).then(user => {
-            const form = editUserForm;
-            form.id.value = user.id;
-            form.username.value = user.username;
-            form.password.value = '';
-            fetch(api + '/roles').then(r => r.json()).then(roles => {
-                const select = document.getElementById('editUserRoles');
-                select.innerHTML = '';
-                roles.forEach(role => {
-                    const option = document.createElement('option');
-                    option.value = role.id;
-                    option.text = role.name.replace('ROLE_', '');
-                    if (user.roles.some(r => r.id === role.id)) {
-                        option.selected = true;
-                    }
-                    select.append(option);
-                });
+        fetch(api + '/users/' + id)
+            .then(r => r.json())
+            .then(user => {
+                editUserForm.id.value = user.id;
+                editUserForm.firstName.value = user.firstName;
+                editUserForm.lastName.value = user.lastName;
+                editUserForm.age.value = user.age;
+                editUserForm.email.value = user.email;
+                editUserForm.password.value = '';
+
+                const rolesSelect = document.getElementById('editUserRoles');
+                for (const option of rolesSelect.options) {
+                    option.selected = user.roles.some(r => r.id === Number(option.value));
+                }
+
                 editUserModal.show();
             });
-        });
     }
 
     editUserForm.addEventListener('submit', e => {
         e.preventDefault();
         const formData = new FormData(editUserForm);
-        const id = formData.get('id');
         const data = {
-            username: formData.get('username'),
+            id: Number(formData.get('id')),
+            firstName: formData.get('firstName'),
+            lastName: formData.get('lastName'),
+            email: formData.get('email'),
+            age: Number(formData.get('age')),
             password: formData.get('password'),
-            roles: [...formData.getAll('roles')].map(Number)
+            roles: Array.from(editUserForm.roles.selectedOptions).map(o => ({id: Number(o.value)}))
         };
-        fetch(api + '/users/' + id, {
+        fetch(api + '/users/' + data.id, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(data)
-        }).then(() => {
-            loadUsers();
-            editUserModal.hide();
-        });
+        })
+            .then(r => {
+                if (!r.ok) throw new Error('Error editing user');
+                return r.json();
+            })
+            .then(() => {
+                loadUsers();
+                editUserModal.hide();
+            })
+            .catch(alert);
     });
 
     function showDeleteModal(id) {
-        fetch(api + '/users/' + id).then(r => r.json()).then(user => {
-            const form = deleteUserForm;
-            form.id.value = user.id;
-            form.username.value = user.username;
-            form.password.value = '********'; // скрыто
-            fetch(api + '/roles').then(r => r.json()).then(roles => {
-                const select = document.getElementById('deleteUserRoles');
-                select.innerHTML = '';
-                roles.forEach(role => {
-                    const option = document.createElement('option');
-                    option.value = role.id;
-                    option.text = role.name.replace('ROLE_', '');
-                    if (user.roles.some(r => r.id === role.id)) {
-                        option.selected = true;
-                    }
-                    select.append(option);
-                });
+        fetch(api + '/users/' + id)
+            .then(r => r.json())
+            .then(user => {
+                deleteUserForm.id.value = user.id;
+                deleteUserForm.firstName.value = user.firstName;
+                deleteUserForm.lastName.value = user.lastName;
+                deleteUserForm.age.value = user.age;
+                deleteUserForm.email.value = user.email;
+
+                const rolesSelect = document.getElementById('deleteUserRoles');
+                for (const option of rolesSelect.options) {
+                    option.selected = user.roles.some(r => r.id === Number(option.value));
+                }
+
                 deleteUserModal.show();
             });
-        });
     }
 
     deleteUserForm.addEventListener('submit', e => {
         e.preventDefault();
         const id = deleteUserForm.id.value;
-        fetch(api + '/users/' + id, {method: 'DELETE'}).then(() => {
-            loadUsers();
-            deleteUserModal.hide();
-        });
+        fetch(api + '/users/' + id, {
+            method: 'DELETE'
+        })
+            .then(r => {
+                if (!r.ok) throw new Error('Error deleting user');
+                loadUsers();
+                deleteUserModal.hide();
+            })
+            .catch(alert);
     });
 
+    // Initial load
     loadAuthInfo();
-    loadUsers();
     loadRoles('newUserRoles');
+    loadRoles('editUserRoles');
+    loadRoles('deleteUserRoles');
+    loadUsers();
 </script>
+
 </body>
 </html>

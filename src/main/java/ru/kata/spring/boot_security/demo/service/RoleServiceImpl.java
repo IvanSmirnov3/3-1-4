@@ -2,7 +2,9 @@ package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.kata.spring.boot_security.demo.mapper.DtoMapper;
 import ru.kata.spring.boot_security.demo.model.Role;
+import ru.kata.spring.boot_security.demo.model.RoleDTO;
 import ru.kata.spring.boot_security.demo.repository.RoleRepository;
 
 import java.util.List;
@@ -33,4 +35,11 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findByName(name)
                 .orElseThrow(() -> new RuntimeException("Role not found: " + name));
     }
+    @Override
+    public List<RoleDTO> findAllRoleDTO() {
+        return findAll().stream()
+                .map(DtoMapper::toRoleDTO)
+                .toList();
+    }
+
 }

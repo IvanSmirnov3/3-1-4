@@ -11,7 +11,6 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -27,10 +26,7 @@ public class AdminController {
 
     @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = userService.findAllUser().stream()
-                .map(DtoMapper::toUserDTO)
-                .toList();
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(userService.findAllUserDTO());
     }
 
     @GetMapping("/user")
@@ -40,36 +36,18 @@ public class AdminController {
 
     @GetMapping("/roles")
     public ResponseEntity<List<RoleDTO>> getAllRoles() {
-        List<RoleDTO> roles = roleService.findAll().stream()
-                .map(DtoMapper::toRoleDTO)
-                .toList();
-        return ResponseEntity.ok(roles);
+        return ResponseEntity.ok(roleService.findAllRoleDTO());
     }
 
     @PostMapping("/users")
-    public ResponseEntity<UserDTO> createUser(@RequestBody Map<String, Object> body) {
-        String username = (String) body.get("username");
-        String password = (String) body.get("password");
-        List<Integer> roleIds = (List<Integer>) body.get("roles");
-
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-
-        User savedUser = userService.createUser(user, roleIds.stream().map(Long::valueOf).toList());
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        User savedUser = userService.createUserFromDTO(userDTO);
         return ResponseEntity.ok(DtoMapper.toUserDTO(savedUser));
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody Map<String, Object> body) {
-        String username = (String) body.get("username");
-        String password = (String) body.get("password");
-        List<Integer> roleIds = (List<Integer>) body.get("roles");
-
-        User formUser = new User();
-        formUser.setUsername(username);
-
-        User updatedUser = userService.updateUser(id, formUser, roleIds.stream().map(Long::valueOf).toList(), password);
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+        User updatedUser = userService.updateUserFromDTO(id, userDTO);
         return ResponseEntity.ok(DtoMapper.toUserDTO(updatedUser));
     }
 

@@ -8,36 +8,65 @@
         body {
             background-color: #f8f9fa;
         }
+
         .sidebar {
             min-height: 100vh;
             background-color: white;
             border-right: 1px solid #dee2e6;
         }
+
         .sidebar .nav-link.active {
             background-color: #0d6efd;
             color: white !important;
         }
+
         .topbar {
             background-color: #212529;
             color: white;
             padding: 0.5rem 1rem;
         }
+
         .logout-btn {
             color: white;
             border: 1px solid white;
         }
+
         .logout-btn:hover {
             background-color: white;
             color: #212529;
+        }
+
+        .table td, .table th {
+            border-left: none !important;
+            border-right: none !important;
+        }
+
+        .table thead th {
+            background-color: white !important;
+            color: black;
+        }
+
+        .table {
+            margin-bottom: 0.1rem !important;
+        }
+
+        .card-body {
+            background-color: white;
+            min-height: 138px;
+            padding-bottom: 0.3rem;
+        }
+
+        /* Первая строка таблицы всегда с серым фоном - фон задаём для ячеек td */
+        tbody tr.first-row td {
+            background-color: #f2f2f2 !important;
         }
     </style>
 </head>
 <body>
 
-<!-- Верхняя панель -->
 <nav class="navbar topbar d-flex justify-content-between align-items-center">
     <div>
-        <span class="fw-bold" th:text="${user.username}">alice</span>
+        <span class="fw-bold" th:text="${user.email}">user@mail.ru</span>
         <span> with roles: </span>
         <span th:each="role, iterStat : ${user.roles}">
             <span th:text="${role.name == 'ROLE_ADMIN' ? 'ADMIN' : (role.name == 'ROLE_USER' ? 'USER' : role.name)}"></span>
@@ -49,7 +78,6 @@
     </form>
 </nav>
 
-<!-- Основной контент -->
 <div class="container-fluid">
     <div class="row">
         <div class="col-2 sidebar p-0">
@@ -65,19 +93,25 @@
                 <div class="card-header fw-bold">
                     About user
                 </div>
-                <div class="card-body p-0">
-                    <table class="table table-bordered m-0">
-                        <thead class="table-light">
+                <div class="card-body">
+                    <table class="table m-0 border-top border-bottom">
+                        <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Username</th>
-                            <th>Roles</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Age</th>
+                            <th>Email</th>
+                            <th>Role</th>
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
+                        <tr class="first-row">
                             <td th:text="${user.id}">1</td>
-                            <td th:text="${user.username}">alice</td>
+                            <td th:text="${user.firstName}">John</td>
+                            <td th:text="${user.lastName}">Doe</td>
+                            <td th:text="${user.age}">30</td>
+                            <td th:text="${user.email}">john.doe@example.com</td>
                             <td>
                                 <span th:each="role, iterStat : ${user.roles}">
                                     <span th:text="${role.name == 'ROLE_ADMIN' ? 'ADMIN' : (role.name == 'ROLE_USER' ? 'USER' : role.name)}"></span>
