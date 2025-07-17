@@ -8,9 +8,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.mapper.DtoMapper;
 import ru.kata.spring.boot_security.demo.model.Role;
-import ru.kata.spring.boot_security.demo.model.RoleDTO;
+import ru.kata.spring.boot_security.demo.dto.RoleDto;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.model.UserDTO;
+import ru.kata.spring.boot_security.demo.dto.UserDto;
 import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.HashSet;
@@ -45,6 +45,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public List<UserDto> findAllUserDto() {
+        return findAllUser().stream()
+                .map(DtoMapper::toUserDto)
+                .toList();
+    }
+
+    @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
@@ -56,18 +63,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User createUserFromDTO(UserDTO userDTO) {
+    public UserDto getUserDtoById(Long id) {
+        User user = findById(id);
+        return DtoMapper.toUserDto(user);
+    }
+
+    @Override
+    public UserDto getCurrentUserDto(User user) {
+        return DtoMapper.toUserDto(user);
+    }
+
+    @Override
+    public User createUserFromDto(UserDto userDto) {
         User user = new User();
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setAge(userDTO.getAge());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setEmail(userDto.getEmail());
+        user.setAge(userDto.getAge());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         Set<Role> roles = new HashSet<>();
-        if (userDTO.getRoles() != null) {
-            List<Long> roleIds = userDTO.getRoles().stream()
-                    .map(RoleDTO::getId)
+        if (userDto.getRoles() != null) {
+            List<Long> roleIds = userDto.getRoles().stream()
+                    .map(RoleDto::getId)
                     .toList();
             roles.addAll(roleService.getRolesByIds(roleIds));
 
@@ -85,20 +103,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User updateUserFromDTO(Long id, UserDTO userDTO) {
-        User userFromDb = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public UserDto createUserReturnDto(UserDto userDto) {
+        User user = createUserFromDto(userDto);
+        return DtoMapper.toUserDto(user);
+    }
 
-        userFromDb.setFirstName(userDTO.getFirstName());
-        userFromDb.setLastName(userDTO.getLastName());
-        userFromDb.setEmail(userDTO.getEmail());
-        userFromDb.setAge(userDTO.getAge());
+    @Override
+    public User updateUserFromDto(Long id, UserDto userDto) {
+        User userFromDb = findById(id);
 
-        if (userDTO.getRoles() != null) {
-            List<Long> roleIds = userDTO.getRoles().stream()
-                    .map(RoleDTO::getId)
+        userFromDb.setFirstName(userDto.getFirstName());
+        userFromDb.setLastName(userDto.getLastName());
+        userFromDb.setEmail(userDto.getEmail());
+        userFromDb.setAge(userDto.getAge());
+
+        if (userDto.getRoles() != null) {
+            List<Long> roleIds = userDto.getRoles().stream()
+                    .map(RoleDto::getId)
                     .toList();
             Set<Role> roles = new HashSet<>(roleService.getRolesByIds(roleIds));
+
             boolean hasAdmin = roles.stream().anyMatch(r -> "ROLE_ADMIN".equals(r.getName()));
             boolean hasUser = roles.stream().anyMatch(r -> "ROLE_USER".equals(r.getName()));
 
@@ -110,18 +134,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             userFromDb.setRoles(roles);
         }
 
-        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
-            userFromDb.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+            userFromDb.setPassword(passwordEncoder.encode(userDto.getPassword()));
         }
 
         return userRepository.save(userFromDb);
     }
 
     @Override
-    public List<UserDTO> findAllUserDTO() {
-        return findAllUser().stream()
-                .map(DtoMapper::toUserDTO)
-                .toList();
+    public UserDto updateUserReturnDto(Long id, UserDto userDto) {
+        User updatedUser = updateUserFromDto(id, userDto);
+        return DtoMapper.toUserDto(updatedUser);
     }
-
 }

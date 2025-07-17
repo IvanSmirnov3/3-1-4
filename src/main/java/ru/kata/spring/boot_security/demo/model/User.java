@@ -40,7 +40,7 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String username, String password, Set<Role> roles, String firstName, String lastName, int age, String email) {
+    public User( String password, Set<Role> roles, String firstName, String lastName, int age, String email) {
         this.password = password;
         this.roles = roles;
         this.firstName = firstName;

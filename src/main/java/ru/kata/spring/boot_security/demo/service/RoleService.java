@@ -1,7 +1,7 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import ru.kata.spring.boot_security.demo.model.Role;
-import ru.kata.spring.boot_security.demo.model.RoleDTO;
+import ru.kata.spring.boot_security.demo.dto.RoleDto;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ public interface RoleService {
 
     List<Role> getRolesByIds(List<Long> ids);
 
-    List<RoleDTO> findAllRoleDTO();
+    List<RoleDto> findAllRoleDto();
 }

@@ -3,10 +3,9 @@ package ru.kata.spring.boot_security.demo.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.mapper.DtoMapper;
-import ru.kata.spring.boot_security.demo.model.RoleDTO;
+import ru.kata.spring.boot_security.demo.dto.RoleDto;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.model.UserDTO;
+import ru.kata.spring.boot_security.demo.dto.UserDto;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
@@ -25,30 +24,30 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
-        return ResponseEntity.ok(userService.findAllUserDTO());
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.findAllUserDto());
     }
 
     @GetMapping("/user")
-    public ResponseEntity<UserDTO> getCurrentUser(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(DtoMapper.toUserDTO(user));
+    public ResponseEntity<UserDto> getCurrentUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(userService.getCurrentUserDto(user));
     }
 
     @GetMapping("/roles")
-    public ResponseEntity<List<RoleDTO>> getAllRoles() {
-        return ResponseEntity.ok(roleService.findAllRoleDTO());
+    public ResponseEntity<List<RoleDto>> getAllRoles() {
+        return ResponseEntity.ok(roleService.findAllRoleDto());
     }
 
     @PostMapping("/users")
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
-        User savedUser = userService.createUserFromDTO(userDTO);
-        return ResponseEntity.ok(DtoMapper.toUserDTO(savedUser));
+    public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+        UserDto savedUserDto = userService.createUserReturnDto(userDto);
+        return ResponseEntity.ok(savedUserDto);
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO) {
-        User updatedUser = userService.updateUserFromDTO(id, userDTO);
-        return ResponseEntity.ok(DtoMapper.toUserDTO(updatedUser));
+    public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UserDto userDto) {
+        UserDto updatedUserDto = userService.updateUserReturnDto(id, userDto);
+        return ResponseEntity.ok(updatedUserDto);
     }
 
     @DeleteMapping("/users/{id}")
@@ -58,7 +57,8 @@ public class AdminController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
-        return ResponseEntity.ok(DtoMapper.toUserDTO(userService.findById(id)));
+    public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
+        UserDto userDto = userService.getUserDtoById(id);
+        return ResponseEntity.ok(userDto);
     }
 }
