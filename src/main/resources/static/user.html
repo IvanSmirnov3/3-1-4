@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>User Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background-color: white;
+            border-right: 1px solid #dee2e6;
+        }
+
+        .sidebar .nav-link.active {
+            background-color: #0d6efd;
+            color: white !important;
+        }
+
+        .topbar {
+            background-color: #212529; /* тёмный фон */
+            color: white; /* белый текст */
+            padding: 0.5rem 1rem;
+        }
+
+        .logout-btn {
+            color: white;
+            border: 1px solid white;
+        }
+
+        .logout-btn:hover {
+            background-color: white;
+            color: #212529;
+        }
+
+        .table td,
+        .table th {
+            border-left: none !important;
+            border-right: none !important;
+        }
+
+        .table thead th {
+            background-color: white !important; /* белый фон заголовков */
+            color: black; /* чёрный текст */
+        }
+
+        .table {
+            margin-bottom: 0.1rem !important;
+            background-color: white; /* белый фон для таблицы */
+        }
+
+        .card-body {
+            background-color: white;
+            min-height: 138px;
+            padding-bottom: 0.3rem;
+        }
+
+        /* Первая строка таблицы всегда с серым фоном - фон задаём для ячеек td */
+        tbody tr.first-row td {
+            background-color: #f2f2f2 !important;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar topbar d-flex justify-content-between align-items-center">
+    <div>
+        <span class="fw-bold" id="userEmail">Loading...</span>
+        <span> with roles: </span>
+        <span id="userRoles"></span>
+    </div>
+    <form th:action="@{/logout}" method="post" class="mb-0">
+        <button class="btn btn-sm logout-btn" type="submit">Logout</button>
+    </form>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-2 sidebar p-0">
+            <div class="nav flex-column nav-pills mt-3">
+                <a class="nav-link active" href="#">User</a>
+            </div>
+        </div>
+
+        <div class="col-10 p-4">
+            <h2>User information-page</h2>
+
+            <div class="card mt-4">
+                <div class="card-header fw-bold">About user</div>
+                <div class="card-body">
+                    <table class="table m-0 border-top border-bottom">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Age</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="first-row">
+                            <td id="userId"></td>
+                            <td id="userFirstName"></td>
+                            <td id="userLastName"></td>
+                            <td id="userAge"></td>
+                            <td id="userEmailTable"></td>
+                            <td id="userRolesTable"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function formatRoles(roles) {
+        return roles
+            .map((role) => {
+                if (role.name === "ROLE_ADMIN") return "ADMIN";
+                else if (role.name === "ROLE_USER") return "USER";
+                else return role.name;
+            })
+            .join(", ");
+    }
+
+    fetch("/api/user")
+        .then((response) => {
+            if (!response.ok) throw new Error("Network response was not ok");
+            return response.json();
+        })
+        .then((user) => {
+            document.getElementById("userEmail").textContent = user.email;
+            document.getElementById("userRoles").textContent = formatRoles(user.roles);
+
+            document.getElementById("userId").textContent = user.id;
+            document.getElementById("userFirstName").textContent = user.firstName;
+            document.getElementById("userLastName").textContent = user.lastName;
+            document.getElementById("userAge").textContent = user.age;
+            document.getElementById("userEmailTable").textContent = user.email;
+            document.getElementById("userRolesTable").textContent = formatRoles(user.roles);
+        })
+        .catch((error) => {
+            console.error("Ошибка при загрузке пользователя:", error);
+        });
+</script>
+</body>
+</html>
